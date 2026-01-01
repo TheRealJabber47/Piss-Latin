@@ -7,18 +7,29 @@
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
+      color: #000;
       padding: 30px;
+      transition: background 0.2s, color 0.2s;
     }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
     textarea {
       width: 100%;
       height: 120px;
       margin-top: 10px;
       font-size: 16px;
+      padding: 10px;
     }
+
     input {
       margin-top: 10px;
       width: 60px;
+      padding: 5px;
     }
+
     button {
       margin-top: 15px;
       margin-right: 10px;
@@ -26,9 +37,41 @@
       font-size: 14px;
       cursor: pointer;
     }
+
+    /* Dark mode */
+    .dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    .dark textarea,
+    .dark input {
+      background: #1e1e1e;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+
+    .dark button {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      font-size: 18px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+
+<button class="theme-toggle" onclick="toggleDarkMode()" id="themeBtn">☀️</button>
 
 <h1>Piss Latin</h1>
 
@@ -45,6 +88,21 @@
 <textarea id="outputText" placeholder="Output..."></textarea>
 
 <script>
+  const themeBtn = document.getElementById("themeBtn");
+
+  // Load saved theme
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+    themeBtn.textContent = "🌙";
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("darkMode", isDark);
+    themeBtn.textContent = isDark ? "🌙" : "☀️";
+  }
+
   function caesarShift(text, shift) {
     return text.split("").map(char => {
       if (/[a-z]/i.test(char)) {
@@ -74,7 +132,7 @@
     text = caesarShift(text, shift);
     text = text.split(" ").map(toCustomLatin).join(" ");
 
-    document.getElementById("outputText").value = text;
+    document.getElementById("outputText").value = text.toLowerCase();
   }
 
   function decode() {
@@ -84,7 +142,7 @@
     text = text.split(" ").map(fromCustomLatin).join(" ");
     text = caesarShift(text, -shift);
 
-    document.getElementById("outputText").value = text;
+    document.getElementById("outputText").value = text.toLowerCase();
   }
 </script>
 
