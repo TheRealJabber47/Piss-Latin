@@ -2,15 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Caesar + Pig Latin Translator</title>
+  <title>Piss Latin</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       padding: 30px;
-    }
-    h1 {
-      margin-bottom: 10px;
     }
     textarea {
       width: 100%;
@@ -33,7 +30,7 @@
 </head>
 <body>
 
-<h1>Caesar Cipher + Pig Latin</h1>
+<h1>Piss Latin</h1>
 
 <label>Shift Value:</label>
 <input type="number" id="shift" value="3">
@@ -50,7 +47,7 @@
 <script>
   function caesarShift(text, shift) {
     return text.split("").map(char => {
-      if (char.match(/[a-z]/i)) {
+      if (/[a-z]/i.test(char)) {
         const code = char.charCodeAt(0);
         const base = code >= 65 && code <= 90 ? 65 : 97;
         return String.fromCharCode(((code - base + shift + 26) % 26) + base);
@@ -59,25 +56,15 @@
     }).join("");
   }
 
-  function toPigLatin(word) {
-    const vowels = /^[aeiou]/i;
-    if (vowels.test(word)) {
-      return word + "way";
-    }
-    const match = word.match(/^([^aeiou]+)(.*)/i);
-    return match ? match[2] + match[1] + "ay" : word;
+  function toCustomLatin(word) {
+    if (word.length < 2) return word;
+    return word.slice(1) + word[0] + "ay";
   }
 
-  function fromPigLatin(word) {
-    if (word.endsWith("way")) {
-      return word.slice(0, -3);
-    }
-    if (word.endsWith("ay")) {
-      const core = word.slice(0, -2);
-      const match = core.match(/(.*)([^aeiou]+)$/i);
-      return match ? match[2] + match[1] : word;
-    }
-    return word;
+  function fromCustomLatin(word) {
+    if (!word.endsWith("ay") || word.length < 4) return word;
+    const core = word.slice(0, -2);
+    return core.slice(-1) + core.slice(0, -1);
   }
 
   function encode() {
@@ -85,7 +72,7 @@
     let text = document.getElementById("inputText").value;
 
     text = caesarShift(text, shift);
-    text = text.split(" ").map(toPigLatin).join(" ");
+    text = text.split(" ").map(toCustomLatin).join(" ");
 
     document.getElementById("outputText").value = text;
   }
@@ -94,7 +81,7 @@
     const shift = parseInt(document.getElementById("shift").value);
     let text = document.getElementById("inputText").value;
 
-    text = text.split(" ").map(fromPigLatin).join(" ");
+    text = text.split(" ").map(fromCustomLatin).join(" ");
     text = caesarShift(text, -shift);
 
     document.getElementById("outputText").value = text;
