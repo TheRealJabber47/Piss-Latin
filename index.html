@@ -78,6 +78,10 @@
 <label>Shift Value:</label>
 <input type="number" id="shift" value="3">
 
+<br>
+
+<button onclick="pasteInput()">Paste</button>
+
 <textarea id="inputText" placeholder="Enter text here..."></textarea>
 
 <br>
@@ -85,12 +89,16 @@
 <button onclick="encode()">Encode</button>
 <button onclick="decode()">Decode</button>
 
+<br>
+
+<button onclick="copyOutput()">Copy</button>
+
 <textarea id="outputText" placeholder="Output..."></textarea>
 
 <script>
   const themeBtn = document.getElementById("themeBtn");
 
-  // Load saved theme
+  // Load saved theme (unchanged)
   if (localStorage.getItem("darkMode") === "true") {
     document.body.classList.add("dark");
     themeBtn.textContent = "🌙";
@@ -143,6 +151,25 @@
     text = caesarShift(text, -shift);
 
     document.getElementById("outputText").value = text.toLowerCase();
+  }
+
+  async function pasteInput() {
+    try {
+      const text = await navigator.clipboard.readText();
+      document.getElementById("inputText").value = text;
+    } catch {
+      alert("Clipboard access denied");
+    }
+  }
+
+  async function copyOutput() {
+    const text = document.getElementById("outputText").value;
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      alert("Clipboard access denied");
+    }
   }
 </script>
 
